@@ -204,19 +204,20 @@ var ww = (function() {
    * @private
    * @param {string} propertyPathString - ...
    * @param {object} context - ...
-   * @param {boolean} [extend] - ...
+   * @param {*} [extendValue] - ...
    * @returns {*}
    */
-  function _getProperty(propertyPathString, context, extend) {
+  function _getProperty(propertyPathString, context, extendValue) {
     var i, property, propertyPathArray, propertyPrevious, propertyString;
+    var isExtend = 'undefined' !== typeof extendValue;
     propertyPrevious = context;
     propertyPathArray = propertyPathString.split('.');
     for (i in propertyPathArray) {
       propertyString = propertyPathArray[i];
       property = propertyPrevious[propertyString];
       if ('undefined' === typeof property) {
-        if (extend) {
-          propertyPrevious[propertyString] = {};
+        if (isExtend) {
+          propertyPrevious[propertyString] = extendValue;
           propertyPrevious = propertyPrevious[propertyString];
           continue;
         }
@@ -256,10 +257,14 @@ var ww = (function() {
   /**
    * ...
    * @function
+   * @param {*} [value] - ...
    * @returns {object}
    */
-  ww.prototype.extend = function() {
-    return _getProperty(this.path, this.context, true);
+  ww.prototype.extend = function(value) {
+    if ('undefined' === typeof value) {
+      value = {};
+    }
+    return _getProperty(this.path, this.context, value);
   };
 
   /**
