@@ -357,82 +357,79 @@ var ww = (function() {
   return Ww;
 })();
 
-//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
 
 ww.tests = (function() {
   var tests = {
-    'If no property path is given, object should be undefined.': function() {
+    'ww() -> undefined': function() {
       return 'undefined' === typeof ww();
     },
-    'If property path is an empty string, object should be undefined.': function() {
+    'ww(\'\') -> undefined': function() {
       return 'undefined' === typeof ww('');
     },
-    'If property path points to a nonexistent child, value should be undefined.': function() {
-      if ('undefined' !== typeof ww('nonexistentProperty').value) {
-        return false;
-      }
-      if ('undefined' !== typeof ww('nonexistentProperty').getValue()) {
-        return false;
-      }
-      return true;
+    'ww(\'nonexistentProperty\').value -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty').value;
     },
-    'If property path points to a child of a nonexistent parent, value should be undefined.': function() {
-      if ('undefined' !== typeof ww('nonexistentProperty.nonexistentProperty').value) {
-        return false;
-      }
-      if ('undefined' !== typeof ww('nonexistentProperty.nonexistentProperty').getValue()) {
-        return false;
-      }
-      return true;
+    'ww(\'nonexistentProperty\').getValue() -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty').getValue();
     },
-    'If property path points to an existent child, value should be defined.': function() {
+    'ww(\'nonexistentProperty.nonexistentProperty\').value -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty.nonexistentProperty').value;
+    },
+    'ww(\'nonexistentProperty.nonexistentProperty\').getValue() -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty.nonexistentProperty').getValue();
+    },
+    'ww(\'existentProperty\').value -> existentProperty': function() {
       var mock = {
         existentProperty: true
       };
-      if (true !== ww('existentProperty', mock).value) {
-        return false;
-      }
-      if (true !== ww('existentProperty', mock).getValue()) {
-        return false;
-      }
-      return true;
+      return true === ww('existentProperty', mock).value;
     },
-    'If property path points to a nonexistent decendant, value should be undefined.': function() {
+    'ww(\'existentProperty\').getValue -> existentProperty': function() {
       var mock = {
         existentProperty: true
       };
-      if ('undefined' !== typeof ww('existentProperty.nonexistentProperty', mock).value) {
-        return false;
-      }
-      if ('undefined' !== typeof ww('existentProperty.nonexistentProperty', mock).getValue()) {
-        return false;
-      }
-      return true;
+      return true === ww('existentProperty', mock).getValue();
     },
-    'If property path points to an existent decendant, value should be defined.': function() {
+    'ww(\'existentProperty.nonexistentProperty\').value -> undefined': function() {
+      var mock = {
+        existentProperty: true
+      };
+      return 'undefined' === typeof ww('existentProperty.nonexistentProperty', mock).value;
+    },
+    'ww(\'existentProperty.nonexistentProperty\').getValue() -> undefined': function() {
+      var mock = {
+        existentProperty: true
+      };
+      return 'undefined' === typeof ww('existentProperty.nonexistentProperty', mock).getValue();
+    },
+    'ww(\'existentProperty.existentProperty\').value -> existentProperty': function() {
       var mock = {
         existentProperty: {
           existentProperty: true
         }
       };
-      if (true !== ww('existentProperty.existentProperty', mock).value) {
-        return false;
-      }
-      if (true !== ww('existentProperty.existentProperty', mock).getValue()) {
-        return false;
-      }
-      return true;
+      return true === ww('existentProperty.existentProperty', mock).value;
     },
-    'If `getValue` method is given a default value and value is undefined, the default value should be returned.': function() {
+    'ww(\'existentProperty.existentProperty\').getValue() -> existentProperty': function() {
+      var mock = {
+        existentProperty: {
+          existentProperty: true
+        }
+      };
+      return true === ww('existentProperty.existentProperty', mock).getValue();
+    },
+    'ww(\'nonexistentProperty\').getValue(value) -> value': function() {
       var mock = {};
       return true === ww('nonexistentProperty', mock).getValue(true);
     },
-    'If `getValue` method is given a default value and value is defined, the value should be returned.': function() {
+    'ww(\'existentProperty\').getValue(value) -> existentProperty': function() {
       var mock = {
         existentProperty: true
       };
       return true === ww('existentProperty', mock).getValue(false);
     },
+    // @todo CONTINUE
     'If property path is a number (id) that does not correspond to an internal property, object should be undefined.': function() {
       return 'undefined' === typeof ww(-1);
     },
