@@ -149,16 +149,17 @@ var ww = (function() {
     function process() {
       var i, property, value;
       for (i in _propertiesUnready) {
-        if (_propertiesUnready.hasOwnProperty(i)) {
-          property = _properties[i];
-          value = _getProperty(property.path, property.context);
-          if ('undefined' === typeof value) {
-            continue;
-          }
-          property.update(value);
-          _propertiesUnready[i](property);
-          delete _propertiesUnready[i];
+        if (!_propertiesUnready.hasOwnProperty(i)) {
+          continue;
         }
+        property = _properties[i];
+        value = _getProperty(property.path, property.context);
+        if ('undefined' === typeof value) {
+          continue;
+        }
+        property.update(value);
+        _propertiesUnready[i](property);
+        delete _propertiesUnready[i];
       }
     }
 
