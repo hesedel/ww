@@ -149,7 +149,7 @@ var ww = (function() {
       for (i in _propertiesUnready) {
         property = _properties[i];
         value = _getProperty(property.path, property.context);
-        if (!value) {
+        if ('undefined' === typeof value) {
           continue;
         }
         property.update(value);
@@ -214,7 +214,7 @@ var ww = (function() {
     for (i in propertyPathArray) {
       propertyString = propertyPathArray[i];
       property = propertyPrevious[propertyString];
-      if (!property) {
+      if ('undefined' === typeof property) {
         if (extend) {
           propertyPrevious[propertyString] = {};
           propertyPrevious = propertyPrevious[propertyString];
@@ -279,7 +279,7 @@ var ww = (function() {
    */
   ww.prototype.getValue = function(defaultValue) {
     var value = _getProperty(this.path, this.context);
-    if (value) {
+    if ('undefined' !== typeof value) {
       return value;
     }
     return defaultValue;
