@@ -367,57 +367,60 @@ ww.tests = (function() {
     'ww(\'\') -> undefined': function() {
       return 'undefined' === typeof ww('');
     },
+    'ww(\' \') -> undefined': function() {
+      return 'undefined' === typeof ww('');
+    },
     'ww(\'nonexistentProperty\').value -> undefined': function() {
       return 'undefined' === typeof ww('nonexistentProperty').value;
     },
     'ww(\'nonexistentProperty\').getValue() -> undefined': function() {
       return 'undefined' === typeof ww('nonexistentProperty').getValue();
     },
-    'ww(\'nonexistentProperty.nonexistentProperty\').value -> undefined': function() {
-      return 'undefined' === typeof ww('nonexistentProperty.nonexistentProperty').value;
+    'ww(\'nonexistentProperty.nonexistentChildProperty\').value -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty.nonexistentChildProperty').value;
     },
-    'ww(\'nonexistentProperty.nonexistentProperty\').getValue() -> undefined': function() {
-      return 'undefined' === typeof ww('nonexistentProperty.nonexistentProperty').getValue();
+    'ww(\'nonexistentProperty.nonexistentChildProperty\').getValue() -> undefined': function() {
+      return 'undefined' === typeof ww('nonexistentProperty.nonexistentChildProperty').getValue();
     },
     'ww(\'existentProperty\').value -> existentProperty': function() {
       var mock = {
         existentProperty: true
       };
-      return true === ww('existentProperty', mock).value;
+      return mock.existentProperty === ww('existentProperty', mock).value;
     },
     'ww(\'existentProperty\').getValue -> existentProperty': function() {
       var mock = {
         existentProperty: true
       };
-      return true === ww('existentProperty', mock).getValue();
+      return mock.existentProperty === ww('existentProperty', mock).getValue();
     },
-    'ww(\'existentProperty.nonexistentProperty\').value -> undefined': function() {
+    'ww(\'existentProperty.nonexistentChildProperty\').value -> undefined': function() {
       var mock = {
         existentProperty: true
       };
-      return 'undefined' === typeof ww('existentProperty.nonexistentProperty', mock).value;
+      return 'undefined' === typeof ww('existentProperty.nonexistentChildProperty', mock).value;
     },
-    'ww(\'existentProperty.nonexistentProperty\').getValue() -> undefined': function() {
+    'ww(\'existentProperty.nonexistentChildProperty\').getValue() -> undefined': function() {
       var mock = {
         existentProperty: true
       };
-      return 'undefined' === typeof ww('existentProperty.nonexistentProperty', mock).getValue();
+      return 'undefined' === typeof ww('existentProperty.nonexistentChildProperty', mock).getValue();
     },
-    'ww(\'existentProperty.existentProperty\').value -> existentProperty': function() {
+    'ww(\'existentProperty.existentChildProperty\').value -> existentChildProperty': function() {
       var mock = {
         existentProperty: {
-          existentProperty: true
+          existentChildProperty: true
         }
       };
-      return true === ww('existentProperty.existentProperty', mock).value;
+      return mock.existentProperty.existentChildProperty === ww('existentProperty.existentChildProperty', mock).value;
     },
-    'ww(\'existentProperty.existentProperty\').getValue() -> existentProperty': function() {
+    'ww(\'existentProperty.existentChildProperty\').getValue() -> existentChildProperty': function() {
       var mock = {
         existentProperty: {
-          existentProperty: true
+          existentChildProperty: true
         }
       };
-      return true === ww('existentProperty.existentProperty', mock).getValue();
+      return mock.existentProperty.existentChildProperty === ww('existentProperty.existentChildProperty', mock).getValue();
     },
     'ww(\'nonexistentProperty\').getValue(value) -> value': function() {
       var mock = {};
@@ -427,17 +430,16 @@ ww.tests = (function() {
       var mock = {
         existentProperty: true
       };
-      return true === ww('existentProperty', mock).getValue(false);
+      return mock.existentProperty === ww('existentProperty', mock).getValue(false);
     },
-    // @todo CONTINUE
-    'If property path is a number (id) that does not correspond to an internal property, object should be undefined.': function() {
+    'ww(-1) -> undefined': function() {
       return 'undefined' === typeof ww(-1);
     },
-    'If property path is a number (id) that corresponds to an internal property, value should be the same as when it was initially called.': function() {
+    'ww(\'existentProperty\').value === ww(ww(\'existentProperty\').id).value': function() {
       var mock = {
-        existentProperty: 'originalValue'
+        existentProperty: true
       };
-      return 'originalValue' === ww(ww('existentProperty', mock).id).value;
+      return mock.existentProperty === ww(ww('existentProperty', mock).id).value;
     },
     'Modifying the returned object should not affect the internally stored object.': function() {
       var mock = {
@@ -454,37 +456,82 @@ ww.tests = (function() {
       ww('existentProperty', mock).value = 'modifiedValue';
       return 'originalValue' === ww('existentProperty', mock).value;
     },
-    'If property does not yet exist when `extend` method is called, the property is created as an empty object and returned.': function() {
+    'ww(\'nonexistentProperty\').extend() -> nonexistentProperty = {}': function() {
       var mock = {};
-      if ('object' !== typeof ww('nonexistentProperty', mock).extend() || 'object' !== typeof ww('nonexistentProperty', mock).value) {
+      if ('object' !== typeof ww('nonexistentProperty', mock).extend()) {
         return false;
       }
-      if ('object' !== typeof ww('nonexistentProperty.nonexistentProperty', mock).extend() || 'object' !== typeof ww('nonexistentProperty.nonexistentProperty', mock).value) {
-        return false;
-      }
-      if ('object' !== typeof ww('nonexistentProperty2.nonexistentProperty', mock).extend() || 'object' !== typeof ww('nonexistentProperty2.nonexistentProperty', mock).value) {
+      if ('object' !== ww('nonexistentProperty', mock).type) {
         return false;
       }
       return true;
     },
-    'If property already exists when `extend` method is called, the property is returned.': function() {
+    'ww(\'nonexistentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function() {
+      var mock = {};
+      if ('object' !== typeof ww('nonexistentProperty.nonexistentChildProperty', mock).extend()) {
+        return false;
+      }
+      if ('object' !== ww('nonexistentProperty.nonexistentChildProperty', mock).type) {
+        return false;
+      }
+      return true;
+    },
+    'ww(\'existentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function() {
       var mock = {
-        'existentProperty': true,
-        'existentProperty2': {
-          'existentProperty': true
+        existentProperty: {}
+      };
+      if ('object' !== typeof ww('existentProperty.nonexistentChildProperty', mock).extend()) {
+        return false;
+      }
+      if ('object' !== ww('existentProperty.nonexistentChildProperty', mock).type) {
+        return false;
+      }
+      return true;
+    },
+    'ww(\'existentProperty\').extend() -> existentProperty': function() {
+      var mock = {
+        existentProperty: true
+      };
+      if (mock.existentProperty !== ww('existentProperty', mock).extend()) {
+        return false;
+      }
+      if (mock.existentProperty !== ww('existentProperty', mock).value) {
+        return false;
+      }
+      return true;
+    },
+    'ww(\'existentProperty.existentChildProperty\').extend() -> existentChildProperty': function() {
+      var mock = {
+        existentProperty: {
+          existentChildProperty: true
         }
       };
-      if (true !== ww('existentProperty', mock).extend() || true !== ww('existentProperty', mock).value) {
+      if (mock.existentProperty.existentChildProperty !== ww('existentProperty.existentChildProperty', mock).extend()) {
         return false;
       }
-      if (true !== ww('existentProperty2.existentProperty', mock).extend() || true !== ww('existentProperty2.existentProperty', mock).value) {
+      if (mock.existentProperty.existentChildProperty !== ww('existentProperty.existentChildProperty', mock).value) {
         return false;
       }
       return true;
     },
-    'If `extend` method is given a value, the extended property is created with this value.': function() {
+    'ww(\'nonexistentProperty\').extend(value) -> nonexistentProperty = value': function() {
       var mock = {};
-      if (true !== ww('nonexistentProperty', mock).extend(true) || true !== ww('nonexistentProperty', mock).value) {
+      if (true !== ww('nonexistentProperty', mock).extend(true)) {
+        return false;
+      }
+      if (true !== ww('nonexistentProperty', mock).value) {
+        return false;
+      }
+      return true;
+    },
+    'ww(\'existentProperty\').extend(value) -> existentProperty': function() {
+      var mock = {
+        existentProperty: false
+      };
+      if (mock.existentProperty !== ww('existentProperty', mock).extend(true)) {
+        return false;
+      }
+      if (mock.existentProperty !== ww('existentProperty', mock).value) {
         return false;
       }
       return true;
