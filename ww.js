@@ -345,6 +345,8 @@ var ww = (function() {
           return;
         }
         return new ww(property);
+      default:
+        return;
     }
     return;
   };
