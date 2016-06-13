@@ -470,8 +470,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    // @todo CONTINUE
-    'If property already exists when `ready` method is called, execute the given function right away with the object as an argument.': function() {
+    'If property already exists when `ready` method is called, execute the given function right away with the ww object as an argument.': function() {
       var mock = {
         existentProperty: true
       };
