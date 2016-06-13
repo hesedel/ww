@@ -353,19 +353,19 @@ ww.tests = (function() {
       return 'undefined' === typeof ww('');
     },
     'If property path points to a nonexistent child, value should be undefined.': function() {
-      if ('undefined' !== typeof ww('nonExistentProperty').value) {
+      if ('undefined' !== typeof ww('nonexistentProperty').value) {
         return false;
       }
-      if ('undefined' !== typeof ww('nonExistentProperty').getValue()) {
+      if ('undefined' !== typeof ww('nonexistentProperty').getValue()) {
         return false;
       }
       return true;
     },
     'If property path points to a child of a nonexistent parent, value should be undefined.': function() {
-      if ('undefined' !== typeof ww('nonExistentProperty.nonExistentProperty').value) {
+      if ('undefined' !== typeof ww('nonexistentProperty.nonexistentProperty').value) {
         return false;
       }
-      if ('undefined' !== typeof ww('nonExistentProperty.nonExistentProperty').getValue()) {
+      if ('undefined' !== typeof ww('nonexistentProperty.nonexistentProperty').getValue()) {
         return false;
       }
       return true;
@@ -386,10 +386,10 @@ ww.tests = (function() {
       var mock = {
         existentProperty: true
       };
-      if ('undefined' !== typeof ww('existentProperty.nonExistentProperty', mock).value) {
+      if ('undefined' !== typeof ww('existentProperty.nonexistentProperty', mock).value) {
         return false;
       }
-      if ('undefined' !== typeof ww('existentProperty.nonExistentProperty', mock).getValue()) {
+      if ('undefined' !== typeof ww('existentProperty.nonexistentProperty', mock).getValue()) {
         return false;
       }
       return true;
@@ -410,7 +410,7 @@ ww.tests = (function() {
     },
     'If `getValue` method is given a default value and value is undefined, the default value should be returned.': function() {
       var mock = {};
-      return true === ww('nonExistentProperty', mock).getValue(true);
+      return true === ww('nonexistentProperty', mock).getValue(true);
     },
     'If `getValue` method is given a default value and value is defined, the value should be returned.': function() {
       var mock = {
@@ -444,13 +444,13 @@ ww.tests = (function() {
     },
     'If property does not yet exist when `extend` method is called, the property is created as an empty object and returned.': function() {
       var mock = {};
-      if ('object' !== typeof ww('nonExistentProperty', mock).extend()) {
+      if ('object' !== typeof ww('nonexistentProperty', mock).extend()) {
         return false;
       }
-      if ('object' !== typeof ww('nonExistentProperty.nonExistentProperty', mock).extend()) {
+      if ('object' !== typeof ww('nonexistentProperty.nonexistentProperty', mock).extend()) {
         return false;
       }
-      if ('object' !== typeof ww('nonExistentProperty2.nonExistentProperty', mock).extend()) {
+      if ('object' !== typeof ww('nonexistentProperty2.nonexistentProperty', mock).extend()) {
         return false;
       }
       return true;
@@ -482,7 +482,7 @@ ww.tests = (function() {
     '`ready` method tests': function() {
       var isPassed = false;
       var mock = {};
-      var object = ww('nonExistentProperty', mock).ready(function(ww) {
+      var object = ww('nonexistentProperty', mock).ready(function(ww) {
         isPassed = true;
       });
       if (1 === typeof ww._propertiesUnready.getIds().length) {
