@@ -133,7 +133,9 @@ var ww = (function() {
       var i;
       var ids = [];
       for (i in _propertiesUnready) {
-        ids.push(i);
+        if (_propertiesUnready.hasOwnProperty(i)) {
+          ids.push(i);
+        }
       }
       return ids;
     }
@@ -147,14 +149,16 @@ var ww = (function() {
     function process() {
       var i, property, value;
       for (i in _propertiesUnready) {
-        property = _properties[i];
-        value = _getProperty(property.path, property.context);
-        if ('undefined' === typeof value) {
-          continue;
+        if (_propertiesUnready.hasOwnProperty(i)) {
+          property = _properties[i];
+          value = _getProperty(property.path, property.context);
+          if ('undefined' === typeof value) {
+            continue;
+          }
+          property.update(value);
+          _propertiesUnready[i](property);
+          delete _propertiesUnready[i];
         }
-        property.update(value);
-        _propertiesUnready[i](property);
-        delete _propertiesUnready[i];
       }
     }
 
@@ -208,11 +212,12 @@ var ww = (function() {
    * @returns {*}
    */
   function _getProperty(propertyPathString, context, extendValue) {
-    var i, property, propertyPathArray, propertyPrevious, propertyString;
+    var i, property, propertyPathArray, propertyPathArrayLength, propertyPrevious, propertyString;
     var isExtend = 'undefined' !== typeof extendValue;
     propertyPrevious = context;
     propertyPathArray = propertyPathString.split('.');
-    for (i in propertyPathArray) {
+    propertyPathArrayLength = propertyPathArray.length;
+    for (i = 0; i < propertyPathArrayLength; i += 1) {
       propertyString = propertyPathArray[i];
       property = propertyPrevious[propertyString];
       if ('undefined' === typeof property) {
@@ -236,7 +241,9 @@ var ww = (function() {
   var ww = function(property) {
     var i;
     for (i in property) {
-      this[i] = property[i];
+      if (property.hasOwnProperty(i)) {
+        this[i] = property[i];
+      }
     }
   };
 
