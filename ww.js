@@ -2,7 +2,7 @@
  * ...
  * @global
  */
-var ww = (function() {
+var ww = (function () {
   'use strict';
 
   /**
@@ -25,7 +25,7 @@ var ww = (function() {
    * @property {object} type - ...
    * @property {object} value - ...
    */
-  var _Property = (function() {
+  var _Property = (function () {
 
     /**
      * ...
@@ -34,7 +34,7 @@ var ww = (function() {
      */
     var _i = 0;
 
-    return function(value, path, context) {
+    return function (value, path, context) {
       this.context = context;
       this.id = _i;
       this.path = path;
@@ -50,7 +50,7 @@ var ww = (function() {
    * @param {*} value - ...
    * @returns {undefined}
    */
-  _Property.prototype.update = function(value) {
+  _Property.prototype.update = function (value) {
     this.type = typeof value;
     this.value = value;
   };
@@ -62,7 +62,7 @@ var ww = (function() {
    * @property {function} pause - ...
    * @property {function} resume - ...
    */
-  var Interval = (function() {
+  var Interval = (function () {
 
     /**
      * @type {boolean}
@@ -119,7 +119,7 @@ var ww = (function() {
    * @property {function} process - ...
    * @property {function} set - ...
    */
-  var PropertiesUnready = (function() {
+  var PropertiesUnready = (function () {
 
     /**
      * ...
@@ -244,7 +244,7 @@ var ww = (function() {
    * @constructor
    * @param {_Property} property - ...
    */
-  var ww = function(property) {
+  var ww = function (property) {
     var i;
     for (i in property) {
       if (property.hasOwnProperty(i)) {
@@ -255,17 +255,31 @@ var ww = (function() {
 
   /**
    * ...
-   * @todo
    * @function
+   * @param {object} valueForThis - ...
+   * @param {array} arrayOfArguments - ...
+   * @returns {boolean}
    */
-  //ww.prototype.apply = function() {};
+  ww.prototype.apply = function (valueForThis, arrayOfArguments) {
+    if ('function' !== this.type) {
+      return false;
+    }
+    this.value.apply(valueForThis, arrayOfArguments);
+    return true;
+  };
 
   /**
    * ...
-   * @todo
    * @function
+   * @returns {boolean}
    */
-  //ww.prototype.call = function() {};
+  ww.prototype.call = function () {
+    if ('function' !== this.type) {
+      return false;
+    }
+    this.value.call(arguments);
+    return true;
+  };
 
   /**
    * ...
@@ -273,7 +287,7 @@ var ww = (function() {
    * @param {*} [value] - ...
    * @returns {*}
    */
-  ww.prototype.extend = function(value) {
+  ww.prototype.extend = function (value) {
     if ('undefined' === typeof value) {
       value = {};
     }
@@ -285,7 +299,7 @@ var ww = (function() {
    * @function
    * @returns {string}
    */
-  ww.prototype.getType = function() {
+  ww.prototype.getType = function () {
     return typeof this.getValue();
   };
 
@@ -295,7 +309,7 @@ var ww = (function() {
    * @param {*} [defaultValue] - ...
    * @returns {*}
    */
-  ww.prototype.getValue = function(defaultValue) {
+  ww.prototype.getValue = function (defaultValue) {
     var value = _getProperty(this.path, this.context);
     if ('undefined' !== typeof value) {
       return value;
@@ -309,7 +323,7 @@ var ww = (function() {
    * @param {function} callback - ...
    * @returns {boolean}
    */
-  ww.prototype.ready = function(callback) {
+  ww.prototype.ready = function (callback) {
     var isCallbackAFunction = 'function' === typeof callback;
     if ('undefined' !== this.type) {
       if (isCallbackAFunction) {
@@ -330,7 +344,7 @@ var ww = (function() {
    * @param {*} value - ...
    * @returns {boolean}
    */
-  //ww.prototype.setValue = function(value) {};
+  //ww.prototype.setValue = function (value) {};
 
   /**
    * ...
@@ -339,7 +353,7 @@ var ww = (function() {
    * @param {object} [context] - ...
    * @returns {ww|undefined}
    */
-  var Ww = function(propertyPathString, context) {
+  var Ww = function (propertyPathString, context) {
     var property;
     switch (typeof propertyPathString) {
       case 'string':
@@ -364,54 +378,54 @@ var ww = (function() {
 
 //-----------------------------------------------------------------------------------------------------------
 
-ww.tests = (function() {
+ww.tests = (function () {
   var tests = {
-    'ww() -> undefined': function() {
+    'ww() -> undefined': function () {
       return 'undefined' === typeof ww();
     },
-    'ww(\'\') -> undefined': function() {
+    'ww(\'\') -> undefined': function () {
       return 'undefined' === typeof ww('');
     },
-    'ww(\' \') -> undefined': function() {
+    'ww(\' \') -> undefined': function () {
       return 'undefined' === typeof ww('');
     },
-    'value ww(\'nonexistentProperty\').value -> undefined': function() {
+    'value ww(\'nonexistentProperty\').value -> undefined': function () {
       return 'undefined' === typeof ww('nonexistentProperty').value;
     },
-    'value ww(\'nonexistentProperty\').getValue() -> undefined': function() {
+    'value ww(\'nonexistentProperty\').getValue() -> undefined': function () {
       return 'undefined' === typeof ww('nonexistentProperty').getValue();
     },
-    'value ww(\'nonexistentProperty.nonexistentChildProperty\').value -> undefined': function() {
+    'value ww(\'nonexistentProperty.nonexistentChildProperty\').value -> undefined': function () {
       return 'undefined' === typeof ww('nonexistentProperty.nonexistentChildProperty').value;
     },
-    'value ww(\'nonexistentProperty.nonexistentChildProperty\').getValue() -> undefined': function() {
+    'value ww(\'nonexistentProperty.nonexistentChildProperty\').getValue() -> undefined': function () {
       return 'undefined' === typeof ww('nonexistentProperty.nonexistentChildProperty').getValue();
     },
-    'value ww(\'existentProperty\').value -> existentProperty': function() {
+    'value ww(\'existentProperty\').value -> existentProperty': function () {
       var mock = {
         existentProperty: true
       };
       return mock.existentProperty === ww('existentProperty', mock).value;
     },
-    'value ww(\'existentProperty\').getValue() -> existentProperty': function() {
+    'value ww(\'existentProperty\').getValue() -> existentProperty': function () {
       var mock = {
         existentProperty: true
       };
       return mock.existentProperty === ww('existentProperty', mock).getValue();
     },
-    'value ww(\'existentProperty.nonexistentChildProperty\').value -> undefined': function() {
+    'value ww(\'existentProperty.nonexistentChildProperty\').value -> undefined': function () {
       var mock = {
         existentProperty: true
       };
       return 'undefined' === typeof ww('existentProperty.nonexistentChildProperty', mock).value;
     },
-    'value ww(\'existentProperty.nonexistentChildProperty\').getValue() -> undefined': function() {
+    'value ww(\'existentProperty.nonexistentChildProperty\').getValue() -> undefined': function () {
       var mock = {
         existentProperty: true
       };
       return 'undefined' === typeof ww('existentProperty.nonexistentChildProperty', mock).getValue();
     },
-    'value ww(\'existentProperty.existentChildProperty\').value -> existentChildProperty': function() {
+    'value ww(\'existentProperty.existentChildProperty\').value -> existentChildProperty': function () {
       var mock = {
         existentProperty: {
           existentChildProperty: true
@@ -419,7 +433,7 @@ ww.tests = (function() {
       };
       return mock.existentProperty.existentChildProperty === ww('existentProperty.existentChildProperty', mock).value;
     },
-    'value ww(\'existentProperty.existentChildProperty\').getValue() -> existentChildProperty': function() {
+    'value ww(\'existentProperty.existentChildProperty\').getValue() -> existentChildProperty': function () {
       var mock = {
         existentProperty: {
           existentChildProperty: true
@@ -427,26 +441,26 @@ ww.tests = (function() {
       };
       return mock.existentProperty.existentChildProperty === ww('existentProperty.existentChildProperty', mock).getValue();
     },
-    'value ww(\'nonexistentProperty\').getValue(value) -> value': function() {
+    'value ww(\'nonexistentProperty\').getValue(value) -> value': function () {
       var mock = {};
       return true === ww('nonexistentProperty', mock).getValue(true);
     },
-    'value ww(\'existentProperty\').getValue(value) -> existentProperty': function() {
+    'value ww(\'existentProperty\').getValue(value) -> existentProperty': function () {
       var mock = {
         existentProperty: true
       };
       return mock.existentProperty === ww('existentProperty', mock).getValue(false);
     },
-    'ww(id) ww(-1) -> undefined': function() {
+    'ww(id) ww(-1) -> undefined': function () {
       return 'undefined' === typeof ww(-1);
     },
-    'ww(id) ww(\'existentProperty\').value === ww(ww(\'existentProperty\').id).value': function() {
+    'ww(id) ww(\'existentProperty\').value === ww(ww(\'existentProperty\').id).value': function () {
       var mock = {
         existentProperty: true
       };
       return mock.existentProperty === ww(ww('existentProperty', mock).id).value;
     },
-    'Modifying the returned ww object should not affect the internally stored object.': function() {
+    'Modifying the returned ww object should not affect the internally stored object.': function () {
       var mock = {
         existentProperty: true
       };
@@ -454,14 +468,14 @@ ww.tests = (function() {
       object.value = false;
       return true === ww(object.id).value;
     },
-    'Modifying the returned ww object should not affect the original object.': function() {
+    'Modifying the returned ww object should not affect the original object.': function () {
       var mock = {
         existentProperty: true
       };
       ww('existentProperty', mock).value = false;
       return true === ww('existentProperty', mock).value;
     },
-    'extend ww(\'nonexistentProperty\').extend() -> nonexistentProperty = {}': function() {
+    'extend ww(\'nonexistentProperty\').extend() -> nonexistentProperty = {}': function () {
       var mock = {};
       if ('object' !== typeof ww('nonexistentProperty', mock).extend()) {
         return false;
@@ -471,7 +485,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'nonexistentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function() {
+    'extend ww(\'nonexistentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function () {
       var mock = {};
       if ('object' !== typeof ww('nonexistentProperty.nonexistentChildProperty', mock).extend()) {
         return false;
@@ -481,7 +495,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'existentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function() {
+    'extend ww(\'existentProperty.nonexistentChildProperty\').extend() -> nonexistentChildProperty = {}': function () {
       var mock = {
         existentProperty: {}
       };
@@ -493,7 +507,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'existentProperty\').extend() -> existentProperty': function() {
+    'extend ww(\'existentProperty\').extend() -> existentProperty': function () {
       var mock = {
         existentProperty: true
       };
@@ -505,7 +519,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'existentProperty.existentChildProperty\').extend() -> existentChildProperty': function() {
+    'extend ww(\'existentProperty.existentChildProperty\').extend() -> existentChildProperty': function () {
       var mock = {
         existentProperty: {
           existentChildProperty: true
@@ -519,7 +533,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'nonexistentProperty\').extend(value) -> nonexistentProperty = value': function() {
+    'extend ww(\'nonexistentProperty\').extend(value) -> nonexistentProperty = value': function () {
       var mock = {};
       if (true !== ww('nonexistentProperty', mock).extend(true)) {
         return false;
@@ -529,7 +543,7 @@ ww.tests = (function() {
       }
       return true;
     },
-    'extend ww(\'existentProperty\').extend(value) -> existentProperty': function() {
+    'extend ww(\'existentProperty\').extend(value) -> existentProperty': function () {
       var mock = {
         existentProperty: false
       };
@@ -541,31 +555,31 @@ ww.tests = (function() {
       }
       return true;
     },
-    'ready ww(\'nonexistentProperty\').ready() -> false': function() {
+    'ready ww(\'nonexistentProperty\').ready() -> false': function () {
       return false === ww('nonexistentProperty').ready();
     },
-    'ready ww(\'existentProperty\').ready() -> true': function() {
+    'ready ww(\'existentProperty\').ready() -> true': function () {
       var mock = {
         existentProperty: true
       };
       return true === ww('existentProperty', mock).ready();
     },
-    'ready ww(\'existentProperty\').ready(function(ww){}) -> (function(ww){})() & true': function() {
+    'ready ww(\'existentProperty\').ready(function(ww){}) -> (function(ww){})() & true': function () {
       var isReady = false;
       var mock = {
         existentProperty: true
       };
-      if (true !== ww('existentProperty', mock).ready(function(ww) {
+      if (true !== ww('existentProperty', mock).ready(function (ww) {
         isReady = true;
       })) {
         return false;
       }
       return isReady;
     },
-    'ready method additional tests': function() {
+    'ready method additional tests': function () {
       var isPassed = false;
       var mock = {};
-      ww('nonexistentProperty', mock).ready(function(ww) {
+      ww('nonexistentProperty', mock).ready(function (ww) {
         isPassed = true;
       });
       if (1 !== ww._propertiesUnready.getIds().length) {
@@ -581,6 +595,12 @@ ww.tests = (function() {
         return false;
       }
       return isPassed;
+    },
+    'call method tests need to be created': function () {
+      return false;
+    },
+    'apply method tests need to be created': function () {
+      return false;
     }
   };
 
