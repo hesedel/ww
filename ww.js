@@ -376,8 +376,6 @@ var ww = (function () { // jshint ignore:line
   return Ww;
 })();
 
-// ---
-
 ww.tests = (function () {
   var tests = {
     'ww() -> undefined': function () {
