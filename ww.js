@@ -596,12 +596,36 @@ ww.tests = (function () {
       }
       return isPassed;
     },
-    'call method tests need to be created': function () {
-      return false;
+    'call ww(\'nonexistentPropertyFunction\').call() -> false': function () {
+      return false === ww('nonexistentPropertyFunction').call();
     },
-    'apply method tests need to be created': function () {
-      return false;
-    }
+    'call ww(\'existentPropertyFunction\').call() -> existentPropertyFunction() & true': function () {
+      var isPassed = false;
+      var mock = {
+        existentPropertyFunction: function () {
+          isPassed = true;
+        }
+      };
+      if (true !== ww('existentPropertyFunction', mock).call()) {
+        return false;
+      }
+      return isPassed;
+    },
+    'apply ww(\'nonexistentPropertyFunction\').apply() -> false': function () {
+      return false === ww('nonexistentPropertyFunction').apply();
+    },
+    'apply ww(\'existentPropertyFunction\').apply() -> existentPropertyFunction() & true': function () {
+      var isPassed = false;
+      var mock = {
+        existentPropertyFunction: function () {
+          isPassed = true;
+        }
+      };
+      if (true !== ww('existentPropertyFunction', mock).apply()) {
+        return false;
+      }
+      return isPassed;
+    },
   };
 
   function run() {
