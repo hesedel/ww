@@ -2,7 +2,7 @@
  * ...
  * @global
  */
-var ww = (function () {
+var ww = (function () { // jshint ignore:line
   'use strict';
 
   /**
@@ -119,7 +119,7 @@ var ww = (function () {
    * @property {function} process - ...
    * @property {function} set - ...
    */
-  var PropertiesUnready = (function () {
+  var PropertiesUnready = (function () { // jshint ignore:line
 
     /**
      * ...
@@ -353,7 +353,7 @@ var ww = (function () {
    * @param {object} [context] - ...
    * @returns {ww|undefined}
    */
-  var Ww = function (propertyPathString, context) {
+  var Ww = function (propertyPathString, context) { // jshint ignore:line
     var property;
     switch (typeof propertyPathString) {
       case 'string':
@@ -361,13 +361,13 @@ var ww = (function () {
           return;
         }
         context = _getContext(context);
-        return new ww(new _Property(_getProperty(propertyPathString, context), propertyPathString, context));
+        return new ww(new _Property(_getProperty(propertyPathString, context), propertyPathString, context)); // jshint ignore:line
       case 'number':
         property = _properties[propertyPathString];
         if (!property) {
           return;
         }
-        return new ww(property);
+        return new ww(property); // jshint ignore:line
     }
   };
   Ww._interval = Interval;
@@ -376,7 +376,7 @@ var ww = (function () {
   return Ww;
 })();
 
-//-----------------------------------------------------------------------------------------------------------
+// ---
 
 ww.tests = (function () {
   var tests = {
