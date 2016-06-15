@@ -1,34 +1,58 @@
 /**
- * ...
+ * Westwing's core Javascript object that stores (should store) all data and
+ * methods used by the website. In its base state, it has methods to easily
+ * extend and retrieve properties within itself or other 3rd-party objects and
+ * takes care of the instances when they don't exist or when they become
+ * available.
+ * Examples: ww('aPropertyWithinWw.aDecendantPropertyWithinWw').getValue()
+ *           ww('aPropertyFromA3rdPartyObject', a3rdPartyObject).getValue()
+ *           ww('$', window).ready(doSomething)
+ * @author Hesedel Pajaron <hesedel.pajaron@westwing.de>
+ * @author Stefan Firnhammer <stefan.firnhammer@westwing.de>
+ * @version 1.0.0
+ *            - .apply()
+ *            - .call()
+ *            - .extend()
+ *            - .getType()
+ *            - .getValue()
+ *            - .ready()
  * @global
+ * @property {object} _interval
+ * @property {object} _propertiesUnready
+ * @property {function} apply
+ * @property {function} call
+ * @property {function} extend
+ * @property {function} getType
+ * @property {function} getValue
+ * @property {function} ready
  */
 var ww = (function () { // jshint ignore:line
   'use strict';
 
   /**
-   * ...
+   * Internal storage of properties which have been called.
    * @type {object}
    * @private
    */
   var _properties = {};
 
   /**
-   * ...
+   * Internal representation of a property.
    * @constructor
    * @private
-   * @param {*} value - ...
-   * @param {string} path - ...
-   * @param {object} context - ...
-   * @property {object} context - ...
-   * @property {object} id - ...
-   * @property {object} path - ...
-   * @property {object} type - ...
-   * @property {object} value - ...
+   * @param {*} value
+   * @param {string} path
+   * @param {object} context
+   * @property {object} context
+   * @property {object} id
+   * @property {object} path
+   * @property {object} type
+   * @property {object} value
    */
   var _Property = (function () {
 
     /**
-     * ...
+     * Incrementing ID everytime a new instance is created.
      * @type {number}
      * @private
      */
@@ -47,7 +71,7 @@ var ww = (function () { // jshint ignore:line
 
   /**
    * @function
-   * @param {*} value - ...
+   * @param {*} value
    * @returns {undefined}
    */
   _Property.prototype.update = function (value) {
@@ -56,11 +80,11 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Interval for the continual execution of internal processes.
    * @constructor
    * @public
-   * @property {function} pause - ...
-   * @property {function} resume - ...
+   * @property {function} pause
+   * @property {function} resume
    */
   var Interval = (function () {
 
@@ -71,20 +95,18 @@ var ww = (function () { // jshint ignore:line
     var _isPaused = false;
 
     /**
-     * ...
      * @function
      * @private
      * @returns {undefined}
      */
     function _callback() {
-      if (_isPaused) {
-        return;
+      if (!_isPaused) {
+        PropertiesUnready.process();
       }
-      PropertiesUnready.process();
+      setTimeout(_callback, 1);
     }
 
     /**
-     * ...
      * @function
      * @public
      * @returns {undefined}
@@ -94,7 +116,6 @@ var ww = (function () { // jshint ignore:line
     }
 
     /**
-     * ...
      * @function
      * @public
      * @returns {undefined}
@@ -103,7 +124,7 @@ var ww = (function () { // jshint ignore:line
       _isPaused = false;
     }
 
-    setInterval(_callback, 1);
+    setTimeout(_callback, 1);
 
     return {
       pause: pause,
@@ -112,24 +133,25 @@ var ww = (function () { // jshint ignore:line
   })();
 
   /**
-   * ...
+   * Properties which were called by the .ready() method and are awaiting
+   * resolution.
    * @constructor
    * @public
-   * @property {function} getIds - ...
-   * @property {function} process - ...
-   * @property {function} set - ...
+   * @property {function} getIds
+   * @property {function} process
+   * @property {function} set
    */
   var PropertiesUnready = (function () { // jshint ignore:line
 
     /**
-     * ...
+     * Internal reference to the properties awaiting resolution and the callback
+     * functions assigned to them.
      * @type {object}
      * @private
      */
     var _propertiesUnready = {};
 
     /**
-     * ...
      * @function
      * @public
      * @returns {array}
@@ -146,7 +168,6 @@ var ww = (function () { // jshint ignore:line
     }
 
     /**
-     * ...
      * @function
      * @public
      * @returns {undefined}
@@ -169,11 +190,10 @@ var ww = (function () { // jshint ignore:line
     }
 
     /**
-     * ...
      * @function
      * @public
-     * @param {number} id - ...
-     * @param {function} callback - ...
+     * @param {number} id
+     * @param {function} callback
      * @returns {boolean}
      */
     function set(id, callback) {
@@ -195,11 +215,11 @@ var ww = (function () { // jshint ignore:line
   })();
 
   /**
-   * ...
+   * Returns the given context if it is valid or the core ww object if it isn't.
    * @function
    * @private
-   * @param {object} context - ...
-   * @returns {object}
+   * @param {object} context
+   * @returns {object|Ww}
    */
   function _getContext(context) {
     if ('object' === typeof context || 'function' === typeof context) {
@@ -209,12 +229,13 @@ var ww = (function () { // jshint ignore:line
   }
 
   /**
-   * ...
+   * Returns the property if it exists. If it doesn't exist and extendValue is
+   * defined, create the property from extendValue and return it.
    * @function
    * @private
-   * @param {string} propertyPathString - ...
-   * @param {object} context - ...
-   * @param {*} [extendValue] - ...
+   * @param {string} propertyPathString
+   * @param {object} context
+   * @param {*} [extendValue]
    * @returns {*}
    */
   function _getProperty(propertyPathString, context, extendValue) {
@@ -240,9 +261,9 @@ var ww = (function () { // jshint ignore:line
   }
 
   /**
-   * ...
+   * Wrapper for the internal property to be returned when ww() is called.
    * @constructor
-   * @param {_Property} property - ...
+   * @param {_Property} property
    */
   var ww = function (property) {
     var i;
@@ -254,10 +275,10 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Executes the value if it's a function, using function's apply method.
    * @function
-   * @param {object} valueForThis - ...
-   * @param {array} arrayOfArguments - ...
+   * @param {object} valueForThis
+   * @param {array} arrayOfArguments
    * @returns {boolean}
    */
   ww.prototype.apply = function (valueForThis, arrayOfArguments) {
@@ -269,7 +290,7 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Executes the value if it's a function, using function's call method.
    * @function
    * @returns {boolean}
    */
@@ -282,9 +303,9 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Extends the context to the path if it doesn't exist and returns it.
    * @function
-   * @param {*} [value] - ...
+   * @param {*} [value] - Creates the extension with this.
    * @returns {*}
    */
   ww.prototype.extend = function (value) {
@@ -295,7 +316,7 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Returns the type of the value.
    * @function
    * @returns {string}
    */
@@ -304,9 +325,9 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Returns the value of the property.
    * @function
-   * @param {*} [defaultValue] - ...
+   * @param {*} [defaultValue] - Returns this if value is undefined.
    * @returns {*}
    */
   ww.prototype.getValue = function (defaultValue) {
@@ -318,9 +339,9 @@ var ww = (function () { // jshint ignore:line
   };
 
   /**
-   * ...
+   * Executes a callback function when the property becomes available.
    * @function
-   * @param {function} callback - ...
+   * @param {function} callback
    * @returns {boolean}
    */
   ww.prototype.ready = function (callback) {
@@ -341,16 +362,16 @@ var ww = (function () { // jshint ignore:line
    * ...
    * @todo
    * @function
-   * @param {*} value - ...
+   * @param {*} value
    * @returns {boolean}
    */
   //ww.prototype.setValue = function (value) {};
 
   /**
-   * ...
+   * The ww object itself.
    * @constructor
-   * @param {string|number} propertyPathString - ...
-   * @param {object} [context] - ...
+   * @param {string|number} propertyPathString
+   * @param {object} [context]
    * @returns {ww|undefined}
    */
   var Ww = function (propertyPathString, context) { // jshint ignore:line
