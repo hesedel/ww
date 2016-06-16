@@ -406,7 +406,7 @@ var ww = (function () { // jshint ignore:line
   return Ww;
 })();
 
-ww.tests = (function () {
+ww._tests = (function () {
   var tests = {
     'ww() -> undefined': function () {
       return 'undefined' === typeof ww();
@@ -681,4 +681,4 @@ ww.tests = (function () {
   };
 })();
 
-ww.tests.run();
+ww._tests.run();
