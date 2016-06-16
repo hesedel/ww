@@ -295,10 +295,19 @@ var ww = (function () { // jshint ignore:line
    * @returns {boolean}
    */
   ww.prototype.call = function () {
+    var i, valueForThis;
+    var argumentsNew = [];
     if ('function' !== this.type) {
       return false;
     }
-    this.value.call(arguments);
+    valueForThis = arguments[0];
+    delete arguments[0];
+    for (i in arguments) {
+        if (arguments.hasOwnProperty(i)) {
+            argumentsNew.push(arguments[i]);
+        }
+    }
+    this.value.apply(valueForThis, argumentsNew);
     return true;
   };
 
