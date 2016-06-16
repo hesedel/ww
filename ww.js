@@ -303,9 +303,9 @@ var ww = (function () { // jshint ignore:line
     valueForThis = arguments[0];
     delete arguments[0];
     for (i in arguments) {
-        if (arguments.hasOwnProperty(i)) {
-            argumentsNew.push(arguments[i]);
-        }
+      if (arguments.hasOwnProperty(i)) {
+        argumentsNew.push(arguments[i]);
+      }
     }
     this.value.apply(valueForThis, argumentsNew);
     return true;
@@ -630,11 +630,14 @@ ww.tests = (function () {
     'call ww(\'existentPropertyFunction\').call() -> existentPropertyFunction() & true': function () {
       var isPassed = false;
       var mock = {
-        existentPropertyFunction: function () {
+        existentPropertyFunction: function (argument) {
+          if (true !== argument) {
+            return;
+          }
           isPassed = true;
         }
       };
-      if (true !== ww('existentPropertyFunction', mock).call()) {
+      if (true !== ww('existentPropertyFunction', mock).call(null, true)) {
         return false;
       }
       return isPassed;
@@ -645,11 +648,14 @@ ww.tests = (function () {
     'apply ww(\'existentPropertyFunction\').apply() -> existentPropertyFunction() & true': function () {
       var isPassed = false;
       var mock = {
-        existentPropertyFunction: function () {
+        existentPropertyFunction: function (argument) {
+          if (true !== argument) {
+            return;
+          }
           isPassed = true;
         }
       };
-      if (true !== ww('existentPropertyFunction', mock).apply()) {
+      if (true !== ww('existentPropertyFunction', mock).apply(null, [true])) {
         return false;
       }
       return isPassed;
