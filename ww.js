@@ -4,7 +4,7 @@
  * extend and retrieve properties within itself or other 3rd-party objects and
  * takes care of the instances when they don't exist or when they become
  * available.
- * Examples: ww('aPropertyWithinWw.aDecendantPropertyWithinWw').getValue()
+ * Examples: ww('aPropertyWithinWw.aDescendantPropertyWithinWw').getValue()
  *           ww('aPropertyFromA3rdPartyObject', a3rdPartyObject).getValue()
  *           ww('$', window).ready(doSomething)
  * @author Hesedel Pajaron <hesedel.pajaron@westwing.de>
