@@ -249,7 +249,7 @@ var ww = (function () { // jshint ignore:line
       property = propertyPrevious[propertyString];
       if ('undefined' === typeof property) {
         if (isExtend) {
-          propertyPrevious[propertyString] = extendValue;
+          propertyPrevious[propertyString] = i < propertyPathArrayLength - 1 ? {} : extendValue;
           propertyPrevious = propertyPrevious[propertyString];
           continue;
         }
@@ -571,6 +571,16 @@ ww._tests = (function () {
       }
       return true;
     },
+    'extend ww(\'nonexistentProperty.nonexistentChildProperty\').extend(value) -> nonexistentChildProperty = value': function () {
+      var mock = {};
+      if (true !== ww('nonexistentProperty.nonexistentChildProperty', mock).extend(true)) {
+        return false;
+      }
+      if (true !== ww('nonexistentProperty.nonexistentChildProperty', mock).value) {
+        return false;
+      }
+      return true;
+    },
     'extend ww(\'existentProperty\').extend(value) -> existentProperty': function () {
       var mock = {
         existentProperty: false
@@ -579,6 +589,32 @@ ww._tests = (function () {
         return false;
       }
       if (mock.existentProperty !== ww('existentProperty', mock).value) {
+        return false;
+      }
+      return true;
+    },
+    'extend ww(\'existentProperty.nonexistentChildProperty\').extend(value) -> value': function () {
+      var mock = {
+        existentProperty: {}
+      };
+      if (true !== ww('existentProperty.nonexistentChildProperty', mock).extend(true)) {
+        return false;
+      }
+      if (true !== ww('existentProperty.nonexistentChildProperty', mock).value) {
+        return false;
+      }
+      return true;
+    },
+    'extend ww(\'existentProperty.existentChildProperty\').extend(value) -> existentChildProperty': function () {
+      var mock = {
+        existentProperty: {
+          existentChildProperty: false
+        }
+      };
+      if (false !== ww('existentProperty.existentChildProperty', mock).extend(true)) {
+        return false;
+      }
+      if (false !== ww('existentProperty.existentChildProperty', mock).value) {
         return false;
       }
       return true;
