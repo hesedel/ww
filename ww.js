@@ -387,7 +387,7 @@ var ww = (function () { // jshint ignore:line
     var property;
     switch (typeof propertyPathString) {
       case 'string':
-        if (!propertyPathString.trim().length) {
+        if (!propertyPathString.replace(/^\s+|\s+$/, '').length) {
           return;
         }
         context = _getContext(context);
@@ -415,7 +415,7 @@ ww._tests = (function () {
       return 'undefined' === typeof ww('');
     },
     'ww(\' \') -> undefined': function () {
-      return 'undefined' === typeof ww('');
+      return 'undefined' === typeof ww(' ');
     },
     'value ww(\'nonexistentProperty\').value -> undefined': function () {
       return 'undefined' === typeof ww('nonexistentProperty').value;
