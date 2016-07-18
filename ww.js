@@ -184,7 +184,7 @@ var ww = (function () { // jshint ignore:line
           continue;
         }
         property.update(value);
-        _propertiesUnready[i](property);
+        _propertiesUnready[i](new ww(property));
         delete _propertiesUnready[i];
       }
     }
