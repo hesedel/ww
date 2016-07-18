@@ -10,18 +10,18 @@
  * @author Hesedel Pajaron <hesedel.pajaron@westwing.de>
  * @author Stefan Firnhammer <stefan.firnhammer@westwing.de>
  * @version 1.0.0
- *            - .apply()
- *            - .call()
- *            - .extend()
- *            - .getType()
- *            - .getValue()
- *            - .ready()
+ *           - .apply()
+ *           - .call()
+ *           - .extend() | .x()
+ *           - .getType()
+ *           - .getValue()
+ *           - .ready()
  * @global
  * @property {object} _interval
  * @property {object} _propertiesUnready
  * @property {function} apply
  * @property {function} call
- * @property {function} extend
+ * @property {function} extend | x
  * @property {function} getType
  * @property {function} getValue
  * @property {function} ready
@@ -323,6 +323,7 @@ var ww = (function () { // jshint ignore:line
     }
     return _getProperty(this.path, this.context, value);
   };
+  ww.prototype.x = ww.prototype.extend;
 
   /**
    * Returns the type of the value.
