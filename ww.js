@@ -72,7 +72,7 @@ var ww = ww || (function () { // jshint ignore:line
       this.id = _i;
       this.path = path;
       this.property = pathArray.pop();
-      this.parentPath = pathArray.length > 0 ? pathArray.join('.') : undefined;
+      this.parentPath = pathArray.length ? pathArray.join('.') : undefined;
       this.parent = _getProperty(this.parentPath, context);
       this.type = 'undefined' !== typeof this.parent ? typeof this.parent[this.property] : 'undefined';
       this.value = 'undefined' !== this.type ? this.parent[this.property] : undefined;
