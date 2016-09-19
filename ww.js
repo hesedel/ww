@@ -26,7 +26,7 @@
  * @property {function} getValue
  * @property {function} ready
  */
-var ww = (function () { // jshint ignore:line
+var ww = ww || (function () { // jshint ignore:line
   'use strict';
 
   var _Property,
