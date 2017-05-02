@@ -4,11 +4,17 @@
  * extend and retrieve properties within itself or other 3rd-party objects and
  * takes care of the instances when they don't exist or when they become
  * available.
- * Examples: ww('aPropertyWithinWw.aDescendantPropertyWithinWw').getValue()
- *           ww('aPropertyFromA3rdPartyObject', a3rdPartyObject).getValue()
+ * Examples: ww('aPropertyWithinWw.aDescendantPropertyWithinWw').value
+ *           ww('aPropertyFromA3rdPartyObject', a3rdPartyObject).getValue(fallbackValue)
  *           ww('$', window).ready(doSomething)
+ *
  * @author Hesedel Pajaron <hesedel.pajaron@westwing.de>
  * @author Stefan Firnhammer <stefan.firnhammer@westwing.de>
+ * @version 1.2.0
+ *           - .setValue()
+ * @version 1.1.0
+ *           - .applyOnReady()
+ *           - .callOnReady()
  * @version 1.0.0
  *           - .apply()
  *           - .call()
@@ -20,11 +26,14 @@
  * @property {object}   _interval
  * @property {object}   _propertiesUnready
  * @property {function} apply
+ * @property {function} applyOnReady
  * @property {function} call
+ * @property {function} callOnReady
  * @property {function} extend | x
  * @property {function} getType
  * @property {function} getValue
  * @property {function} ready
+ * @property {function} setValue
  */
 var ww = ww || (function () { // jshint ignore:line
   'use strict';
@@ -37,6 +46,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Internal storage of properties which have been called.
+   *
    * @type {object}
    * @private
    */
@@ -44,6 +54,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Internal representation of a property.
+   *
    * @constructor
    * @private
    * @param {string} path
@@ -61,6 +72,7 @@ var ww = ww || (function () { // jshint ignore:line
 
     /**
      * Incrementing ID everytime a new instance is created.
+     *
      * @type {number}
      * @private
      */
@@ -93,6 +105,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Interval for the continual execution of internal processes.
+   *
    * @constructor
    * @public
    * @property {function} pause
@@ -144,6 +157,7 @@ var ww = ww || (function () { // jshint ignore:line
   /**
    * Properties which were called by the .ready() method and are awaiting
    * resolution.
+   *
    * @constructor
    * @public
    * @property {function} getIds
@@ -155,6 +169,7 @@ var ww = ww || (function () { // jshint ignore:line
     /**
      * Internal reference to the properties awaiting resolution and the callback
      * functions assigned to them.
+     *
      * @type {object}
      * @private
      */
@@ -227,6 +242,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Returns the given context if it is valid or the core ww object if it isn't.
+   *
    * @function
    * @private
    * @param {*} context
@@ -242,6 +258,7 @@ var ww = ww || (function () { // jshint ignore:line
   /**
    * Returns the property if it exists. If it doesn't exist and extendValue is
    * defined, create the property from extendValue and return it.
+   *
    * @function
    * @private
    * @param {string} propertyPathString
@@ -283,6 +300,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Wrapper for the internal property to be returned when ww() is called.
+   *
    * @constructor
    * @param {_Property} property
    */
@@ -297,6 +315,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Executes the value if it's a function, using function's apply method.
+   *
    * @function
    * @param {*}     valueForThis
    * @param {array} arrayOfArguments
@@ -313,31 +332,56 @@ var ww = ww || (function () { // jshint ignore:line
   };
 
   /**
+   * Executes the function when it becomes available, using function's apply method.
+   * @function
+   * @param {*}     valueForThis
+   * @param {array} arrayOfArguments
+   * @returns {boolean}
+   */
+  ww.prototype.applyOnReady = function (valueForThis, arrayOfArguments) {
+    return this.ready(function (ww) {
+      ww.apply(valueForThis, arrayOfArguments);
+    });
+  };
+
+  /**
    * Executes the value if it's a function, using function's call method.
+   *
    * @function
    * @returns {*}
    */
   ww.prototype.call = function () {
-    var i, valueForThis;
+    var valueForThis;
     var argumentsNew = [];
     if ('function' !== this.type) {
       return false;
     }
-    valueForThis = arguments[0];
-    delete arguments[0];
+    argumentsNew = Array.prototype.slice.call(arguments);
+    valueForThis = argumentsNew.shift();
     if ('undefined' === typeof valueForThis) {
       valueForThis = this.parent;
-    }
-    for (i in arguments) {
-      if (arguments.hasOwnProperty(i)) {
-        argumentsNew.push(arguments[i]);
-      }
     }
     return this.value.apply(valueForThis, argumentsNew);
   };
 
   /**
+   * Executes the function when it becomes available, using function's call method.
+   * @function
+   * @param {*}     valueForThis
+   * @param {array} arrayOfArguments
+   * @returns {boolean}
+   */
+  ww.prototype.callOnReady = function () {
+    var arrayOfArguments = Array.prototype.slice.call(arguments);
+    var valueForThis = arrayOfArguments.shift();
+    return this.ready(function (ww) {
+      ww.apply(valueForThis, arrayOfArguments);
+    });
+  };
+
+  /**
    * Extends the context to the path if it doesn't exist and returns it.
+   *
    * @function
    * @param {*} [value] - Creates the extension with this.
    * @returns {*}
@@ -352,6 +396,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Returns the type of the value.
+   *
    * @function
    * @returns {string}
    */
@@ -361,6 +406,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Returns the value of the property.
+   *
    * @function
    * @param {*} [defaultValue] - Returns this if value is undefined.
    * @returns {*}
@@ -374,6 +420,7 @@ var ww = ww || (function () { // jshint ignore:line
 
   /**
    * Executes a callback function when the property becomes available.
+   *
    * @function
    * @param {function} callback
    * @returns {boolean}
@@ -393,16 +440,19 @@ var ww = ww || (function () { // jshint ignore:line
   };
 
   /**
-   * ...
-   * @todo
+   * Sets the value on the property
+   *
    * @function
    * @param {*} value
-   * @returns {boolean}
+   * @returns {*}
    */
-  //ww.prototype.setValue = function (value) {};
+  ww.prototype.setValue = function (value) {
+    return _getProperty(this.parentPath, this.context, {})[this.property] = value;
+  };
 
   /**
    * The ww object itself.
+   *
    * @constructor
    * @param {string|number} propertyPathString
    * @param {*}             [context]
@@ -430,3 +480,82 @@ var ww = ww || (function () { // jshint ignore:line
 
   return Ww;
 })();
+
+/**
+ * Events model
+ *
+ * @param    {array}    events
+ * @property {function} off
+ * @property {funciton} on
+ * @property {funciton} trigger
+ */
+ww('Events').x((function () {
+  'use strict';
+
+  function Events(events) {
+    var i;
+
+    this.events = {};
+
+    if ('undefined' === typeof events) {
+      return;
+    }
+
+    for (i in events) {
+      this.events[events[i]] = [];
+    }
+  }
+
+  /**
+   * @function
+   * @param {string} event
+   */
+  Events.prototype.off = function (event) {
+    ww(event, this.events).setValue([]);
+  };
+
+  /**
+   * @function
+   * @param {string} event
+   * @param {function} fn
+   */
+  Events.prototype.on = function (event, fn) {
+    var i;
+    var eventArray = [];
+
+    eventArray = event.split('.');
+    eventArray = eventArray.map(function (name, i) {
+      return eventArray.slice(0, i + 1).join('.');
+    });
+
+    for (i = 0; i < eventArray.length; i += 1) {
+      ww(eventArray[i], this.events).x([]);
+    }
+
+    ww(event, this.events).value.push(fn);
+  };
+
+  /**
+   * @function
+   * @param {string} event
+   */
+  Events.prototype.trigger = function (event) {
+    var i;
+    var arrayOfArguments = Array.prototype.slice.call(arguments, 1);
+    var events = ww(event, this.events).getValue([]);
+
+    for (i in events) {
+      if (events.hasOwnProperty(i)) {
+        if ('function' === typeof events[i]) {
+          events[i].apply(undefined, arrayOfArguments);
+
+          continue;
+        }
+
+        this.trigger([event, i].join('.'));
+      }
+    }
+  };
+
+  return Events;
+})());
