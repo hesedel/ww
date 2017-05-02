@@ -1,4 +1,5 @@
 ww._tests = (function () {
+  'use strict';
   var tests = {
     'ww() -> undefined': function () {
       return 'undefined' === typeof ww();
@@ -300,6 +301,12 @@ ww._tests = (function () {
     'call ww(\'nonexistentPropertyFunction\').call() -> false': function () {
       return false === ww('nonexistentPropertyFunction').call();
     },
+    'call ww(\'existentPropertyNotAFunction\').call() -> false': function () {
+      var mock = {
+        existentPropertyNotAFunction: true
+      };
+      return false === ww('existentPropertyNotAFunction', mock).call();
+    },
     'call ww(\'existentPropertyFunction\').call() -> existentPropertyFunction()': function () {
       var isPassed = false;
       var mock = {
@@ -311,7 +318,7 @@ ww._tests = (function () {
           return true;
         }
       };
-      if (true !== ww('existentPropertyFunction', mock).call(null, true)) {
+      if (true !== ww('existentPropertyFunction', mock).call(undefined, true)) {
         return false;
       }
       return isPassed;
@@ -326,8 +333,38 @@ ww._tests = (function () {
       };
       return mock.existentProperty === ww('existentPropertyFunction', mock).call();
     },
+    'callOnReady ww(\'nonexistentPropertyFunction\').callOnReady() -> false': function () {
+      return false === ww('nonexistentPropertyFunction').callOnReady();
+    },
+    'callOnReady ww(\'existentPropertyNotAFunction\').callOnReady() -> true': function () {
+      var mock = {
+        existentPropertyNotAFunction: true
+      };
+      return true === ww('existentPropertyNotAFunction', mock).callOnReady();
+    },
+    'callOnReady ww(\'existentPropertyFunction\').callOnReady() -> true & existentPropertyFunction()': function () {
+      var isPassed = false;
+      var mock = {
+        existentPropertyFunction: function (argument) {
+          if (true !== argument) {
+            return;
+          }
+          isPassed = true;
+        }
+      };
+      if (true !== ww('existentPropertyFunction', mock).callOnReady(undefined, true)) {
+        return false;
+      }
+      return isPassed;
+    },
     'apply ww(\'nonexistentPropertyFunction\').apply() -> false': function () {
       return false === ww('nonexistentPropertyFunction').apply();
+    },
+    'apply ww(\'existentPropertyNotAFunction\').apply() -> false': function () {
+      var mock = {
+        existentPropertyNotAFunction: true
+      };
+      return false === ww('existentPropertyNotAFunction', mock).apply();
     },
     'apply ww(\'existentPropertyFunction\').apply() -> existentPropertyFunction()': function () {
       var isPassed = false;
@@ -340,7 +377,7 @@ ww._tests = (function () {
           return true;
         }
       };
-      if (true !== ww('existentPropertyFunction', mock).apply(null, [true])) {
+      if (true !== ww('existentPropertyFunction', mock).apply(undefined, [true])) {
         return false;
       }
       return isPassed;
@@ -355,6 +392,30 @@ ww._tests = (function () {
       };
       return mock.existentProperty === ww('existentPropertyFunction', mock).apply();
     },
+    'applyOnReady ww(\'nonexistentPropertyFunction\').applyOnReady() -> false': function () {
+      return false === ww('nonexistentPropertyFunction').applyOnReady();
+    },
+    'applyOnReady ww(\'existentPropertyNotAFunction\').applyOnReady() -> true': function () {
+      var mock = {
+        existentPropertyNotAFunction: true
+      };
+      return true === ww('existentPropertyNotAFunction', mock).applyOnReady();
+    },
+    'applyOnReady ww(\'existentPropertyFunction\').applyOnReady() -> true & existentPropertyFunction()': function () {
+      var isPassed = false;
+      var mock = {
+        existentPropertyFunction: function (argument) {
+          if (true !== argument) {
+            return;
+          }
+          isPassed = true;
+        }
+      };
+      if (true !== ww('existentPropertyFunction', mock).applyOnReady(undefined, [true])) {
+        return false;
+      }
+      return isPassed;
+    }
   };
 
   function run() {
