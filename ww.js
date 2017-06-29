@@ -33,7 +33,7 @@
  * @property {function} getType
  * @property {function} getValue
  * @property {function} ready
- * @property {function} setValue
+ * @property {function} setValue 
  */
 var ww = ww || (function () { // jshint ignore:line
   'use strict';
