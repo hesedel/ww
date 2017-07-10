@@ -568,11 +568,3 @@ ww('Events').x((function () {
 
     return Events;
 })());
-
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = ww;
-} else if (typeof define === 'function' && define.amd) {
-    define([], function () {
-        return ww;
-    });
-}
