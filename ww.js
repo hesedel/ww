@@ -559,12 +559,5 @@ ww('Events').x((function () {
         }
     };
 
-    /**
-     * A wrapper around trigger to adhere to NodeJS signature
-     *
-     * @type {function}
-     */
-    Events.prototype.emit = Events.prototype.trigger;
-
     return Events;
 })());
